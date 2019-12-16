@@ -14,13 +14,13 @@ before_install:
   - curl -LO https://storage.googleapis.com/kubernetes-release/release/$(curl -s https://storage.googleapis.com/kubernetes-release/release/stable.txt)/bin/linux/amd64/kubectl
   - chmod +x ./kubectl
   - sudo mv ./kubectl /usr/local/bin/kubectl
-  - export KUBECONFIG="course-03/exercises/udacity-c3-deployment/k8s/demo-kubeconfig"
+  - export KUBECONFIG="udacity-c3-deployment/k8s/demo-kubeconfig"
 
 
 
 install:
-  - docker-compose -f course-03/exercises/udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel 
-  - kubectl apply -f course-03/exercises/udacity-c3-deployment/k8s
+  - docker-compose -f udacity-c3-deployment/docker/docker-compose-build.yaml build --parallel 
+  - kubectl apply -f udacity-c3-deployment/k8s
 
   
 
