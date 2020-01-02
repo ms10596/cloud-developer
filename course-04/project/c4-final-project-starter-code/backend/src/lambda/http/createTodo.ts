@@ -15,7 +15,8 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
     const itemId = uuid.v4()
 
     const newItem = {
-        id : itemId,
+        todoId : itemId,
+        userId: "1",
         ...newTodo
     }
     await docClient.put({
