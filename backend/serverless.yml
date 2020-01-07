@@ -59,6 +59,7 @@ functions:
           method: post
           path: todos
           cors: true
+          authorizer: Auth
 
   UpdateTodo:
     handler: src/lambda/http/updateTodo.handler
@@ -67,6 +68,7 @@ functions:
           method: patch
           path: todos/{todoId}
           cors: true
+          authorizer: Auth
 
   DeleteTodo:
     handler: src/lambda/http/deleteTodo.handler
@@ -75,6 +77,7 @@ functions:
           method: delete
           path: todos/{todoId}
           cors: true
+          authorizer: Auth
 
   GenerateUploadUrl:
     handler: src/lambda/http/generateUploadUrl.handler
@@ -83,6 +86,7 @@ functions:
           method: post
           path: todos/{todoId}/attachment
           cors: true
+          authorizer: Auth
 
 resources:
   Resources:
