@@ -1,20 +1,29 @@
 import { CustomAuthorizerEvent, CustomAuthorizerResult } from 'aws-lambda'
 import 'source-map-support/register'
 
-import { verify/*, decode*/ } from 'jsonwebtoken'
+import {/*verify,*/ decode} from 'jsonwebtoken'
 import { createLogger } from '../../utils/logger'
 // import Axios from 'axios'
-// import { Jwt } from '../../auth/Jwt'
+import { Jwt } from '../../auth/Jwt'
 import { JwtPayload } from '../../auth/JwtPayload'
 
 const logger = createLogger('auth')
-const secret = process.env.SECRET
+// const secret = process.env.SECRET
 
-// const jwksUrl = 'https://test-endpoint.auth0.com/.well-known/jwks.json'
+// const jwksUrl = 'https://dev-03bw-tn0.auth0.com/.well-known/jwks.json'
+// var jwksClient = require('jwks-rsa');
+// var client = jwksClient({
+//   jwksUri: jwksUrl
+// });
+// function getKey(header, callback){
+//   client.getSigningKey(header.kid, function(err, key) {
+//     console.log(err)
+//     var signingKey = key.publicKey || key.rsaPublicKey;
+//     callback(null, signingKey);
+//   });
+// }
+export const handler = async (event: CustomAuthorizerEvent): Promise<CustomAuthorizerResult> => {
 
-export const handler = async (
-  event: CustomAuthorizerEvent
-): Promise<CustomAuthorizerResult> => {
   logger.info('Authorizing a user', event.authorizationToken)
   try {
     const jwtToken = await verifyToken(event.authorizationToken)
@@ -54,8 +63,8 @@ export const handler = async (
 
 async function verifyToken(authHeader: string): Promise<JwtPayload> {
   const token = getToken(authHeader)
-//   const jwt: Jwt = decode(token, { complete: true }) as Jwt
-  return verify(token, secret) as JwtPayload
+  const jwt: Jwt = decode(token, { complete: true }) as Jwt
+  return jwt.payload
 }
 
 function getToken(authHeader: string): string {
