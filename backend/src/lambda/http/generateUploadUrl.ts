@@ -1,12 +1,17 @@
 import 'source-map-support/register'
+import { getUserId } from '../utils'
 
 import { APIGatewayProxyEvent, APIGatewayProxyResult, APIGatewayProxyHandler } from 'aws-lambda'
-const AWS = require('aws-sdk')
-
+import * as AWS from 'aws-sdk'
+const AWSXRay = require('aws-xray-sdk')
+const XAWS = AWSXRay.captureAWS(AWS)
+const docClient = new XAWS.DynamoDB.DocumentClient()
+const todosTable = process.env.TODO_TABLE
 export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEvent): Promise<APIGatewayProxyResult> => {
   const todoId = event.pathParameters.todoId
+  const userId = getUserId(event)
 
-  const s3 = new AWS.S3( {
+  const s3 = new XAWS.S3( {
       signatureVersion: 'v4'
   })
   const signedUrl = s3.getSignedUrl('putObject', {
@@ -16,7 +21,19 @@ export const handler: APIGatewayProxyHandler = async (event: APIGatewayProxyEven
 
   })
 
-  // TODO: Return a presigned URL to upload a file for a TODO item with the provided id
+  await docClient.update({
+    TableName: todosTable,
+    Key: {
+        todoId: todoId,
+        userId: userId
+    },
+    UpdateExpression: "set attachmentUrl = :signedUrl",
+    ExpressionAttributeValues:{
+      ":signedUrl":"https://ms10596-todo.s3.amazonaws.com/"+todoId
+      },
+  ReturnValues:"UPDATED_NEW"
+}).promise()
+
   return {
     statusCode: 200,
     headers: {

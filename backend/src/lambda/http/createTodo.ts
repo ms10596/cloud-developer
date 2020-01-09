@@ -5,8 +5,10 @@ import { APIGatewayProxyEvent, APIGatewayProxyHandler, APIGatewayProxyResult } f
 import { CreateTodoRequest } from '../../requests/CreateTodoRequest'
 import { getUserId } from '../utils'
 const uuid = require('uuid')
-const AWS = require('aws-sdk')
-const docClient = new AWS.DynamoDB.DocumentClient()
+import * as AWS from 'aws-sdk'
+const AWSXRay = require('aws-xray-sdk')
+const XAWS = AWSXRay.captureAWS(AWS)
+const docClient = new XAWS.DynamoDB.DocumentClient()
 const todosTable = process.env.TODO_TABLE
 
 
